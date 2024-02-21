@@ -1,0 +1,46 @@
+version: '2.3.3'
+
+networks:
+  goseccure:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.24.0.0/16
+          gateway: 172.24.0.1
+
+services:
+  goseccuredb:
+    container_name: goseccuredb
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: tcfPm)y_Io7nLt9c
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: Szigony123$$
+      MYSQL_DATABASE: goseccuredb
+      MYSQL_ROOT_HOST: "localhost"
+    ports:
+      - "3306:3306"
+    networks:
+      goseccure:
+        ipv4_address: 172.24.0.2
+
+  goseccure-apache:
+    container_name: goseccure-apache
+    image: sample:8.0-apache
+    build: .
+    depends_on:
+      - goseccuredb
+    environment:
+      - DEBUG=false
+    volumes:
+      - .:/var/www/html/
+    ports:
+      - 8080:80
+    networks:
+      goseccure:
+        ipv4_address: 172.24.0.3
+
+# Volumes
+volumes:
+  db_conf:
