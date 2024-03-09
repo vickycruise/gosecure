@@ -20,3 +20,6 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('/encrypt-file', [App\Http\Controllers\AjaxController::class, 'encryptFile'])->name('encrypt.file');
+Route::post('/decrypt-file', [App\Http\Controllers\AjaxController::class, 'decryptFile'])->name('decrypt.file');
+
