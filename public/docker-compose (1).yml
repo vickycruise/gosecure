@@ -1,0 +1,46 @@
+version: '2.3.3'
+
+networks:
+  americares:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.24.0.0/16
+          gateway: 172.24.0.1
+
+services:
+  americaresdb:
+    container_name: americaresdb
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: tcfPm)y_Io7nLt9c
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: Szigony123$$
+      MYSQL_DATABASE: americaresdb
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3309:3306"
+    networks:
+      americares:
+        ipv4_address: 172.24.0.2
+
+  americares-apache:
+    container_name: americares-apache
+    image: sample:8.0-apache
+    build: .
+    depends_on:
+      - americaresdb
+    environment:
+      - DEBUG=false
+    volumes:
+      - .:/var/www/html/
+    ports:
+      - 5000:80
+    networks:
+      americares:
+        ipv4_address: 172.24.0.3
+
+# Volumes
+volumes:
+  db_conf:

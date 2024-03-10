@@ -9,18 +9,33 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\FilesCrypt; 
 class AjaxController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
- 
+    
+   public function __construct()
+   {
+       $this->middleware('auth');
+   }
+
+   /**
+    * Show the application dashboard.
+    *
+    * @return \Illuminate\Contracts\Support\Renderable
+    */
+   public function index()
+   {
+       return view('home');
+   }
     public function encryptFile(Request $request)
     {
         $file = $request->file('encryptfile');
-        $passphrase = "test";
+            
+        if (!$file) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No file provided.'
+            ]);
+        }
+        $passphrase = $request->input('password');
+
         $fileName = $file->getClientOriginalName();
         // Generate a random initialization vector (IV)
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
@@ -60,10 +75,16 @@ class AjaxController extends Controller
     
         // Extract file name and encrypted data using the separator ':'
         $parts = explode(':', $fileData, 2);
+        if (count($parts) != 2) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please select correct file'
+            ]);
+        }
         $fileName = $parts[0];
          $encryptedData = $parts[1];
     
-        $passphrase = "test";
+         $passphrase = $request->input('password');
     
         // Extract the initialization vector (IV) from the encrypted data
         $iv = substr($encryptedData, 0, openssl_cipher_iv_length('aes-256-cbc'));
@@ -73,7 +94,12 @@ class AjaxController extends Controller
     
         // Decrypt the data
         $decryptedData = openssl_decrypt(substr($encryptedData, openssl_cipher_iv_length('aes-256-cbc')), 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
-    
+        if(!$decryptedData){
+            return response()->json ([
+                'success' => false,
+                'message' => 'Failed to decrypt file.',
+            ]);
+        }
         // Write the decrypted data to a new file with the extracted file name
         file_put_contents($fileName, $decryptedData);
     

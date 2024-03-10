@@ -7,7 +7,6 @@
         <h2>Welcome to <span>HeroBiz</span></h2>
         <p class="test">Et voluptate esse accusantium accusamus natus reiciendis quidem voluptates similique aut.</p>
         <div class="row  ">
-
             <div class=" col-md-6  picker-container ">
                 <form  id="encryptForm" method="post" enctype="multipart/form-data">
                     @csrf
@@ -22,7 +21,6 @@
                     <button class="btns" type="submit" > Encrypt</button>
                 </form>
             </div>
-
             <div class="col-md-6  picker-container ">
                 <form  id="decryptForm" method="post" enctype="multipart/form-data">
                     @csrf
@@ -35,11 +33,9 @@
                         </div>
                     </div>
                     <button class="btns" type="submit" > Decrypt</button>
-
                 </form>
             </div>
         </div>
-
     </div>
 @endsection
 @endsection
