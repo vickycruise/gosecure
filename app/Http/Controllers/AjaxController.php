@@ -62,53 +62,60 @@ class AjaxController extends Controller
     
     public function decryptFile(Request $request)
     {
-        $file = $request->file('decryptfile');
-
-        if (!$file) {
+        try {
+            $file = $request->file('decryptfile');
+    
+            if (!$file) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No file provided.'
+                ]);
+            }
+    
+            $content = file_get_contents($file->path());
+            $fileData = base64_decode($content);
+    
+            // Extract file name and encrypted data using the separator ':'
+            $parts = explode(':', $fileData, 2);
+            if (count($parts) != 2) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please select correct file'
+                ]);
+            }
+                $fileName = $parts[0];
+            $encryptedData = $parts[1];
+    
+            $passphrase = $request->input('password');
+    
+            // Extract the initialization vector (IV) from the encrypted data
+            $iv = substr($encryptedData, 0, openssl_cipher_iv_length('aes-256-cbc'));
+    
+            // Generate a key from the passphrase
+            $key = openssl_pbkdf2($passphrase, 'salt', 32, 1000, 'sha256');
+    
+            // Decrypt the data
+            $decryptedData = openssl_decrypt(substr($encryptedData, openssl_cipher_iv_length('aes-256-cbc')), 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
+            
+            if (!$decryptedData) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to decrypt file.',
+                ]);
+            }
+    
+            return response()->json([
+                'success' => true,
+                'content' => $decryptedData,
+                'filename' => $fileName,
+                'message' => 'File decrypted successfully.',
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'No file provided.'
+                'message' => 'An error occurred: ' . $e->getMessage(),
             ]);
         }
-        $content = file_get_contents($file->path());
-        $fileData = base64_decode($content);
-    
-        // Extract file name and encrypted data using the separator ':'
-        $parts = explode(':', $fileData, 2);
-        if (count($parts) != 2) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Please select correct file'
-            ]);
-        }
-        $fileName = $parts[0];
-         $encryptedData = $parts[1];
-    
-         $passphrase = $request->input('password');
-    
-        // Extract the initialization vector (IV) from the encrypted data
-        $iv = substr($encryptedData, 0, openssl_cipher_iv_length('aes-256-cbc'));
-    
-        // Generate a key from the passphrase
-        $key = openssl_pbkdf2($passphrase, 'salt', 32, 1000, 'sha256');
-    
-        // Decrypt the data
-        $decryptedData = openssl_decrypt(substr($encryptedData, openssl_cipher_iv_length('aes-256-cbc')), 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
-        if(!$decryptedData){
-            return response()->json ([
-                'success' => false,
-                'message' => 'Failed to decrypt file.',
-            ]);
-        }
-        // Write the decrypted data to a new file with the extracted file name
-        file_put_contents($fileName, $decryptedData);
-    
-        return response()->json([
-            'success' => true,
-            'content'=>$decryptedData,
-            'filename'=>$fileName,
-            'message' => 'File decrypted successfully.',
-        ]);
     }
     
 
