@@ -1,3 +1,31 @@
+
+<style>
+    /* Styling for the list items */
+    .list-item {
+        margin-bottom: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-left: 25px
+        
+    }
+
+    /* Styling for the item titles */
+    .item-title {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        margin: 0;
+        font-size: 20px;
+    }
+
+    /* Styling for the item descriptions */
+    .field__item {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-top: 1px solid #ddd;
+    }
+</style>
 @extends('layouts.footer')
 @extends('layouts.app')
 @section('body')
@@ -6,7 +34,7 @@
         <img src="/images/home.png" class="img-fluid animated">
         <h2 class="mt-3">Welcome to <span>Go Secure</span></h2>
         <div class="row ">
-            <div class="col-sm-12">
+            <div class="col-sm-16">
 
                 <h1 class="node__title h2">
                     <div
@@ -23,64 +51,41 @@
                 </div>
                 <br>
                 <div class="lead">
-                    <div
-                        class="paragraph-list-items paragraph-checklist align-items-stretch justify-content-center flex-wrap row">
+                  <!-- Your HTML code with added styling -->
+<div class="paragraph-list-items  paragraph-checklist align-items-stretch justify-content-center   flex-wrap row">
+    <div class="list-item col-md-5  border border-success">
+        <div class="px-4 py-2 bg-7 d-block h-100">
+            <div class="item-content">
+                <h3 class="item-title">Algorithm</h3>
+                <div class="clearfix text-formatted field field--name-field-icon-text field--type-text-long field--label-hidden field__item">
+                    <p>Also known as ciphers, algorithms are the rules or instructions for the encryption process. Triple DES, RSA, and AES are examples of encryption algorithms, or ciphers.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                        <div class="list-item col-md-6 border border-start border-success" >
-                            <div class="px-4 py-2 bg-7 d-block h-100">
-                                <div class="item-content">
-                                    <h3 class="item-title">
-                                        Algorithm
-                                    </h3>
+    <div class="list-item  col-md-5  border border-success ">
+        <div class="px-4 py-2 bg-7 d-block h-100">
+            <div class="item-content">
+                <h3 class="item-title">Decryption</h3>
+                <div class="clearfix text-formatted field field--name-field-icon-text field--type-text-long field--label-hidden field__item">
+                    <p>The process of converting the unreadable cipher text that has been encrypted back to the original, readable information.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                                    <div
-                                        class="clearfix text-formatted field field--name-field-icon-text field--type-text-long field--label-hidden field__item">
-                                        <p>Also known as ciphers, algorithms are the rules or instructions for the
-                                            encryption process. Triple DES, RSA, and AES are examples of encryption
-                                            algorithms, or ciphers.</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="list-item col-md-6">
-                            <div class="px-4 py-2 bg-7 d-block h-100">
-                                <div class="item-content">
-                                    <h3 class="item-title">
-                                        Decryption
-                                    </h3>
-
-                                    <div
-                                        class="clearfix text-formatted field field--name-field-icon-text field--type-text-long field--label-hidden field__item">
-                                        <p>The process of converting the unreadable cipher text that has been encrypted back
-                                            to the original, readable information.</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="list-item col-md-6">
-                            <div class="px-4 py-2 bg-7 d-block h-100">
-                                <div class="item-content">
-                                    <h3 class="item-title">
-                                        Key
-                                    </h3>
-
-                                    <div
-                                        class="clearfix text-formatted field field--name-field-icon-text field--type-text-long field--label-hidden field__item">
-                                        <p>A unique, randomized string of bits used to encrypt and/or decrypt data. Common
-                                            key lengths are 128 and 256 bits for private keys and 2048 bits for public keys.
-                                        </p>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </div>
+    <div class="m-5 list-item col-md-6 border border-success ">
+        <div class="px-4 py-2 bg-7 d-block h-100">
+            <div class="item-content">
+                <h3 class="item-title">Key</h3>
+                <div class="clearfix text-formatted field field--name-field-icon-text field--type-text-long field--label-hidden field__item">
+                    <p>A unique, randomized string of bits used to encrypt and/or decrypt data. Common key lengths are 128 and 256 bits for private keys and 2048 bits for public keys.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                 </div>
             </div>
             <div class="col-sm-4"></div>
