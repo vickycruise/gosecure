@@ -1,3 +1,4 @@
+
 $(document).ready(function () {
     toastr.options = {
         "debug": false,
@@ -48,9 +49,9 @@ $(document).ready(function () {
             formData.append("password", password);
     
             // Proceed with encrypting the file after a delay of 2000 milliseconds (2 seconds)
-            setTimeout(() => {
+   
                 encryptFile(formData);
-            }, 2000);
+           
         }
     });
     
@@ -91,9 +92,9 @@ $(document).ready(function () {
             formData.append("password", password);
     
             // Proceed with encrypting the file after a delay of 2000 milliseconds (2 seconds)
-            setTimeout(() => {
+           
                 decryptFile(formData);
-            }, 2000);
+          
         }
   
 
@@ -101,104 +102,89 @@ $(document).ready(function () {
 });
 // decrypt-file
 async function  encryptFile (formData)  {
-    var loader = $('<div class="loader">Uploading: <span class="progress">0%</span></div>');
-    $('body').append(loader);
-
+    $('body').animate({ scrollTop: 0 }, 'slow');
+   $(".overlay").removeClass('hidden');
+   $('body').css('overflow', 'hidden');
     $.ajax({
         url: "/encrypt-file",
         type: "POST",
         data: formData,
         processData: false,
         contentType: false,  
-        xhr: function () {
-            var xhr = new window.XMLHttpRequest();
-            xhr.upload.addEventListener("progress", function (evt) {
-                if (evt.lengthComputable) {
-                    var percentComplete = (evt.loaded / evt.total) * 100;
-                    console.log(percentComplete);
-                    $('.progress').text(percentComplete.toFixed(2) + "%");
-                }
-            }, false);
-            return xhr;
-        },
-
+    
         success: function (response) {
-            loader.remove();
-            response=JSON.parse(response);
-            if (response.success) {
-                Swal.fire({
-                    title: 'success!',
-                    text: 'File has been encrypted successfully.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                  });
+            setTimeout(()=>{
                 downloadFile(response);
-                
-            } else if(response.message) {
-                Swal.fire({
-                    title: 'error!',
-                    text: response.message,
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                  });            }
+            },5000);
         },
         error: function (xhr, status, error) {
+            $(".overlay").addClass('hidden');   
+            $('body').css('overflow', 'auto');
+        
             console.error(error);
             toastr.error("An error occurred. Please try again.");
-            loader.remove();
+         
         },
     });
 }
 function decryptFile(formData) {
+    $('body').animate({ scrollTop: 0 }, 'slow');
+    $(".overlay").removeClass('hidden');
+    $('body').css('overflow', 'hidden');
     $.ajax({
         url: "/decrypt-file",
         type: "POST",
         data: formData,
         processData: false,
         contentType: false,
-        success: function (response) {
-            console.log(typeof response);
-            response=JSON.parse(response);
-            if (response.success) {
-                Swal.fire({
-                    title: 'success!',
-                    text: 'File has been encrypted successfully.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                  });
+        success: function (response) { 
+            setTimeout(()=>{
                 downloadFile(response);
-                
-            } else if(response.message) {
-                Swal.fire({
-                    title: 'error!',
-                    text: response.message,
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                  });            }
+            },5000);
         },
         error: function (xhr, status, error) {
+            $(".overlay").addClass('hidden');   
+            $('body').css('overflow', 'auto');
             console.error(error);
             toastr.error("An error occurred. Please try again.");
         },
     });
 }
 function downloadFile(response) {
-    // Convert decrypted content (base64 encoded) to Blob\
-    var content=response.content;
-    var filename=response.filename;
-    var blob = new Blob([content], { type: 'application/octet-stream' });
-    var url = window.URL.createObjectURL(blob);
+    // Convert decrypted content (base64 encoded) to Blob
+    $(".overlay").addClass('hidden');   
+    $('body').css('overflow', 'auto');
 
-    // Create a temporary anchor element to trigger the download
-    console.log(filename);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = filename??'sample.txt'; // Specify the default filename
-    document.body.appendChild(a);
-    a.click();
-    // Remove the temporary anchor element
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+     response=JSON.parse(response);
+    if (response.success) {
+        var content=response.content;
+        var filename=response.filename;
+        var blob = new Blob([content], { type: 'application/octet-stream' });
+        var url = window.URL.createObjectURL(blob);
+    
+        // Create a temporary anchor element to trigger the download
+        console.log(filename);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = filename??'sample.txt'; // Specify the default filename
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        Swal.fire({
+            title: 'success!',
+            text: response.message??'operation successfully completed',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+    } else if(response.message) {
+        Swal.fire({
+            title: 'error!',
+            text: response.message,
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });            }
+ 
 }
 filePicker = (action) => {
     let filename = document.getElementById(action=="encrypt"?"en-file-txt":"de-file-txt");

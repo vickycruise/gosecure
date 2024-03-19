@@ -54,7 +54,7 @@ class AjaxController extends Controller
     
         return response()->json([
             'success' => true,
-            'message' => 'File encrypted successfully.',
+            'message' => 'File has been encrypted successfully.',
             'filename'=>$fileName,
             'content' => $fileNameEncryptedData,
         ]);
@@ -108,7 +108,7 @@ class AjaxController extends Controller
                 'success' => true,
                 'content' => $decryptedData,
                 'filename' => $fileName,
-                'message' => 'File decrypted successfully.',
+                'message' => 'File has been decrypted successfully.',
             ]);
         } catch (\Exception $e) {
             return response()->json([
